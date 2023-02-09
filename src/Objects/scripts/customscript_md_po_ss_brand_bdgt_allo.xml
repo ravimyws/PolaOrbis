@@ -1,0 +1,54 @@
+<scheduledscript scriptid="customscript_md_po_ss_brand_bdgt_allo">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>MD - PO Brand Budget Allocation</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <scriptfile>[/SuiteScripts/SS/md_po_ss_brand_budget_alloction.js]</scriptfile>
+  <scriptcustomfields>
+    <scriptcustomfield scriptid="custscript_md_po_ss_bdgt_brand">
+      <accesslevel>2</accesslevel>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <fieldtype>SELECT</fieldtype>
+      <help></help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <label>Brand</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete>NO_ACTION</onparentdelete>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype>-101</selectrecordtype>
+      <setting></setting>
+      <storevalue>T</storevalue>
+    </scriptcustomfield>
+  </scriptcustomfields>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_md_po_ss_brand_bdgt_allo">
+      <custscript_md_po_ss_bdgt_brand>[ACCOUNT_SPECIFIC_VALUE]</custscript_md_po_ss_bdgt_brand>
+      <isdeployed>T</isdeployed>
+      <loglevel>ERROR</loglevel>
+      <status>NOTSCHEDULED</status>
+      <title>MD - PO Brand Budget Allocation</title>
+      <recurrence>
+        <single>
+          <repeat></repeat>
+          <startdate>2023-02-08</startdate>
+          <starttime>18:00:00Z</starttime>
+        </single>
+      </recurrence>
+    </scriptdeployment>
+  </scriptdeployments>
+</scheduledscript>
