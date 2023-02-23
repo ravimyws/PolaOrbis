@@ -1,0 +1,35 @@
+<suitelet scriptid="customscript_md_po_sl_brand_budget">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>MD - PO Sl Budget Allocation</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <notifyuser>F</notifyuser>
+  <scriptfile>[/SuiteScripts/SL/md_po_sl_brand_budget.js]</scriptfile>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_md_po_sl_brand_budget">
+      <allemployees>F</allemployees>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole></audslctrole>
+      <eventtype></eventtype>
+      <isdeployed>T</isdeployed>
+      <isonline>F</isonline>
+      <loglevel>ERROR</loglevel>
+      <runasrole></runasrole>
+      <status>RELEASED</status>
+      <title>MD - PO Sl Budget Allocation</title>
+      <links>
+        <link>
+          <linkcategory>BASICTRANSACTIONSFINANCIAL</linkcategory>
+          <linklabel>Budget Allocation</linklabel>
+        </link>
+        <link>
+          <linkcategory>ACCOUNTCENTERFINANCIALLISTS</linkcategory>
+          <linklabel>Budget Allocation</linklabel>
+        </link>
+      </links>
+    </scriptdeployment>
+  </scriptdeployments>
+</suitelet>
