@@ -7,7 +7,7 @@
   <notifyowner>T</notifyowner>
   <scriptfile>[/SuiteScripts/MR/md_po_mr_brand_budget_allocation.js]</scriptfile>
   <scriptcustomfields>
-    <scriptcustomfield scriptid="custscript_md_po_mr_bdgt_brand">
+    <scriptcustomfield scriptid="custscript_md_po_mr_bdgt_allo_req_data">
       <accesslevel>2</accesslevel>
       <applyformatting>F</applyformatting>
       <checkspelling>F</checkspelling>
@@ -23,14 +23,14 @@
       <help></help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
-      <label>Brand</label>
+      <label>Request Data</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>
       <minvalue></minvalue>
       <onparentdelete>NO_ACTION</onparentdelete>
       <searchlevel>2</searchlevel>
-      <selectrecordtype>-101</selectrecordtype>
+      <selectrecordtype>[scriptid=customrecord_md_po_bdgt_allo_scr_rec]</selectrecordtype>
       <setting></setting>
       <storevalue>T</storevalue>
     </scriptcustomfield>
@@ -39,7 +39,7 @@
     <scriptdeployment scriptid="customdeploy_md_po_mr_brand_bdgt_allo">
       <buffersize>1</buffersize>
       <concurrencylimit>1</concurrencylimit>
-      <custscript_md_po_mr_bdgt_brand>[ACCOUNT_SPECIFIC_VALUE]</custscript_md_po_mr_bdgt_brand>
+      <custscript_md_po_mr_bdgt_allo_req_data></custscript_md_po_mr_bdgt_allo_req_data>
       <isdeployed>T</isdeployed>
       <loglevel>DEBUG</loglevel>
       <queueallstagesatonce>T</queueallstagesatonce>

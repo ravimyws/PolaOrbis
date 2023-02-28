@@ -1,11 +1,11 @@
 /**
- * @NApiVersion 2.x
+ * @NApiVersion 2.1
  * @NScriptType ClientScript
  * @NModuleScope SameAccount
  */
-define([],
+define(['N/https','N/url'],
 
-function() {
+function(https,url) {
     
     /**
      * Function to be executed after page is initialized.
@@ -20,10 +20,44 @@ function() {
 
     }
 
+    function saveRecord(scriptContext){
+        let currentRecord = scriptContext.currentRecord;
+        let brand = scriptContext.currentRecord.getValue('custpage_sl_bdgt_brand');
+        let year = scriptContext.currentRecord.getValue('custpage_sl_bdgt_year');
+        if(year && brand){
+            let mode = "checkAllocationSchedule";
+            let surl = url.resolveScript({
+                scriptId: 'customscript_md_po_sl_brand_budget',
+                deploymentId: 'customdeploy_md_po_sl_brand_budget',
+                params:{
+                    brand,year,mode
+                }
+            });
+            let response = https.get({
+                url:surl
+            });
+
+            let body = JSON.parse(response.body);
+
+            if(body.status === 'failed'){
+                alert(body.details.errors);
+                return false;
+            }
+
+        }else{
+            
+            return true;
+        }
+
+        return true;
+
+    }
+
    
 
     return {
         pageInit: pageInit,
+        saveRecord:saveRecord,
        handleclick:function(){
         location.href = location.href + "&mode=genAllocation";
        }

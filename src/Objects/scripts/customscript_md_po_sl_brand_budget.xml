@@ -7,12 +7,42 @@
   <notifyowner>T</notifyowner>
   <notifyuser>F</notifyuser>
   <scriptfile>[/SuiteScripts/SL/md_po_sl_brand_budget.js]</scriptfile>
+  <scriptcustomfields>
+    <scriptcustomfield scriptid="custscript_md_po_sl_brand_bdgt">
+      <accesslevel>2</accesslevel>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <fieldtype>SELECT</fieldtype>
+      <help></help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <label>P/L Brand</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete>NO_ACTION</onparentdelete>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype>-101</selectrecordtype>
+      <setting></setting>
+      <storevalue>T</storevalue>
+    </scriptcustomfield>
+  </scriptcustomfields>
   <scriptdeployments>
     <scriptdeployment scriptid="customdeploy_md_po_sl_brand_budget">
       <allemployees>F</allemployees>
       <allpartners>F</allpartners>
       <allroles>T</allroles>
       <audslctrole></audslctrole>
+      <custscript_md_po_sl_brand_bdgt>[ACCOUNT_SPECIFIC_VALUE]</custscript_md_po_sl_brand_bdgt>
       <eventtype></eventtype>
       <isdeployed>T</isdeployed>
       <isonline>F</isonline>
