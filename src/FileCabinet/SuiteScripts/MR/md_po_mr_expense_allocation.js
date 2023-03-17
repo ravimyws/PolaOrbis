@@ -94,30 +94,7 @@ define([
 
   const map = (mapContext) => {
     try {
-      let value = JSON.parse(mapContext.value);
-      let groupTransaction = value.genExpenseData.reduce((acc, tran) => {
-        let key = tran.id + "_" + tran.uniquekey;
-        let obj = acc[key];
-        if (obj) {
-          acc[key].push(tran);
-        } else {
-          acc[key] = [tran];
-        }
-        return acc;
-      }, {});
-
-      log.debug('groupTransaction',groupTransaction);
-
-      Object.keys(groupTransaction).forEach((key) => {
-        let data = groupTransaction[key];
-
-        value.jedata = data;
-
-        mapContext.write({
-          key: key,
-          value: value,
-        });
-      });
+      
     } catch (e) {
       log.error("map error", e);
       throw e;
@@ -142,17 +119,30 @@ define([
   const reduce = (reduceContext) => {
     try {
       let gt = getExpenseGatway();
+
       let values = JSON.parse(reduceContext.values[0]);
+
+      log.debug('r values',values);
+
+      let genExpenseData = values.genExpenseData;   
+      
+      let expenseData = values.expenseData; 
+
+      let tranIds = expenseData.map((e)=>{
+        return e.id;
+      });
+
+      let uniqueTranIds = [...new Set(tranIds)];
 
       let body = {};
 
       body["subsidiary"] = values.request.subsidiary;
-      body["custbody_md_po_exp_allo_gen_fr_tran"] = values.jedata[0].id;
+      //body["custbody_md_po_exp_allo_gen_fr_tran"] = values.jedata[0].id;
       body["custbody_md_po_exp_allo_entry"] = true;//"T";
 
       let relatedJE = gt.getRelatedJournalEntries(
         body.subsidiary,
-        body.custbody_md_po_exp_allo_gen_fr_tran
+        uniqueTranIds
       );
       log.debug('relatedJE',relatedJE);
 
@@ -161,7 +151,7 @@ define([
       });
 
       let lines = [];
-      values.jedata.forEach((d) => {
+      genExpenseData.forEach((d) => {
         let line = {};
         line["account"] = d.account;
         line["memo"] = d.description;
@@ -169,6 +159,7 @@ define([
         line["location"] = d.location;
         line["department"] = d.department;
         line["entity"] = d.entity;
+        line["custcol_md_po_exp_allo_gen_fr_tran"] = d.id;
         if (d.debitforeignamount) {
           line["debit"] = d.debitforeignamount;
         } else if (d.creditforeignamount) {
@@ -248,5 +239,5 @@ define([
     });
   }
 
-  return { getInputData, map, reduce, summarize };
+  return { getInputData/* , map */, reduce, summarize };
 });
