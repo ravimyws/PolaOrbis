@@ -241,11 +241,8 @@ define([], () => {
                            transactionaccountingline.transactionline ) )
                    AND "transaction"."id" = transactionline."transaction" ))
                 AND (
-                      ( (
-                          (NVL(transactionLine.taxline, 'F') = ? AND transactionLine.mainline = ? AND "TRANSACTION"."TYPE" IN ('Journal')) 
-                          OR 
-                          (NVL(transactionLine.mainline, 'F') = ? AND NVL(transactionLine.taxline, 'F') = ?)
-                        )
+                      ( 
+                       NVL(transactionLine.taxline, 'F') = ?
                        AND transactionline."class" IN ( ? )
                        -- AND "account".accttype IN ( 'Expense' )
                        AND transactionline.subsidiary IN ( ? )
@@ -257,10 +254,7 @@ define([], () => {
                     ) `;
 
       return this.getResults(sql, [
-        false,//transactionLine.taxline
-        true,//transactionLine.mainline
         
-        false,//transactionLine.mainline
         false,//transactionLine.taxline
 
         genClass,//transactionline."class"
