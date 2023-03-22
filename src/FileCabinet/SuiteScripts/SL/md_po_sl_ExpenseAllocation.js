@@ -152,16 +152,16 @@ define([
                 key: "description",
               }, */
               {
-                id: "custpage_sl_expallo_tran_camt",
-                type: serverWidget.FieldType.CURRENCY,
-                label:'Credit',
-                key: "creditforeignamount",
-              },
-              {
                 id: "custpage_sl_expallo_tran_damty",
                 type: serverWidget.FieldType.CURRENCY,
                 label:'Debit',
-                key: "debitforeignamount",
+                key: "debit",
+              },
+              {
+                id: "custpage_sl_expallo_tran_camt",
+                type: serverWidget.FieldType.CURRENCY,
+                label:'Credit',
+                key: "credit",
               },
               {
                 id: "custpage_sl_expallo_tranid",
@@ -194,7 +194,7 @@ define([
                 id: "custpage_sl_expallo_tranentity",
                 type: serverWidget.FieldType.SELECT,
                 label: "Entity",
-                source: "entity",
+                source: -9,//"entity",
                 key: "entity",
               },
               ,
@@ -202,7 +202,7 @@ define([
                 id: "custpage_sl_expallo_tranclass",
                 type: serverWidget.FieldType.SELECT,
                 label: "Class",
-                source: "class",
+                source: "classification",
                 key: "class",
               },
               {
@@ -228,7 +228,7 @@ define([
                id: "custpage_sl_expallo_tranamt",
                 type: serverWidget.FieldType.CURRENCY,
                 label:'Amount',
-                key: "foreignamount",
+                key: "amount",
               },*/
             ];
 
@@ -289,22 +289,23 @@ define([
                 key: "memo",
               },
               {
-                id: "custpage_sl_expallo_gtran_camt",
-                type: serverWidget.FieldType.CURRENCY,
-                label:'Credit',
-                key: "creditforeignamount",
-              },
-              {
                 id: "custpage_sl_expallo_gtran_damty",
                 type: serverWidget.FieldType.CURRENCY,
                 label:'Debit',
-                key: "debitforeignamount",
+                key: "debit",
               },
+              {
+                id: "custpage_sl_expallo_gtran_camt",
+                type: serverWidget.FieldType.CURRENCY,
+                label:'Credit',
+                key: "credit",
+              },
+              
               {
                 id: "custpage_sl_expallo_gtranentity",
                 type: serverWidget.FieldType.SELECT,
                 label: "Entity",
-                source: "entity",
+                source: -9,//"entity",
                 key: "entity",
               },              
               {

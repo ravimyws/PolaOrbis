@@ -160,10 +160,10 @@ define([
         line["department"] = d.department;
         line["entity"] = d.entity;
         line["custcol_md_po_exp_allo_gen_fr_tran"] = d.id;
-        if (d.debitforeignamount) {
-          line["debit"] = d.debitforeignamount;
-        } else if (d.creditforeignamount) {
-          line["credit"] = d.creditforeignamount;
+        if (d.debit) {
+          line["debit"] = d.debit;
+        } else if (d.credit) {
+          line["credit"] = d.credit;
         }
         lines.push(line);
       });

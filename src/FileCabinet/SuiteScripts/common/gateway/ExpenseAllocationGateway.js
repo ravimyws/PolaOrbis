@@ -208,9 +208,9 @@ define([], () => {
             "department":null,
             "location":null,
             "accttype":"Expense",
-            "foreignamount":500,
-            "creditforeignamount":null,
-            "debitforeignamount":500} */
+            "amount":500,
+            "credit":null,
+            "debit":500} */
     getGenExpensesByQuery(subsidiary, genClass, period,sourceAccounts) {
       log.error("getGenExpensesByQuery", { subsidiary, genClass, period });
       let sql = `SELECT 
@@ -225,9 +225,9 @@ define([], () => {
               BUILTIN_RESULT.TYPE_INTEGER(transactionLine.department) AS department /*{transactionlines.department#RAW}*/, 
               BUILTIN_RESULT.TYPE_INTEGER(transactionLine."LOCATION") AS "LOCATION" /*{transactionlines.location#RAW}*/, 
               BUILTIN_RESULT.TYPE_STRING("ACCOUNT".accttype) AS accttype /*{transactionlines.accountingimpact.account.accttype#RAW}*/, 
-              BUILTIN_RESULT.TYPE_CURRENCY(transactionLine.foreignamount, BUILTIN.CURRENCY(transactionLine.foreignamount)) AS foreignamount /*{transactionlines.foreignamount#RAW}*/, 
-              BUILTIN_RESULT.TYPE_CURRENCY(transactionLine.creditforeignamount, BUILTIN.CURRENCY(transactionLine.creditforeignamount)) AS creditforeignamount /*{transactionlines.creditforeignamount#RAW}*/, 
-              BUILTIN_RESULT.TYPE_CURRENCY(transactionLine.debitforeignamount, BUILTIN.CURRENCY(transactionLine.debitforeignamount)) AS debitforeignamount /*{transactionlines.debitforeignamount#RAW}*/,
+              BUILTIN_RESULT.TYPE_CURRENCY(TransactionAccountingLine.amount, BUILTIN.CURRENCY(TransactionAccountingLine.amount)) AS amount /*{transactionlines.accountingimpact.amount#RAW}*/,
+              BUILTIN_RESULT.TYPE_CURRENCY(TransactionAccountingLine.credit, BUILTIN.CURRENCY(TransactionAccountingLine.credit)) AS credit /*{transactionlines.accountingimpact.credit#RAW}*/,
+              BUILTIN_RESULT.TYPE_CURRENCY(TransactionAccountingLine.debit, BUILTIN.CURRENCY(TransactionAccountingLine.debit)) AS debit /*{transactionlines.accountingimpact.debit#RAW}*/,
               transactionLine.uniquekey
             FROM 
               "TRANSACTION", 
@@ -240,8 +240,12 @@ define([], () => {
                            AND transactionline."id" =
                            transactionaccountingline.transactionline ) )
                    AND "transaction"."id" = transactionline."transaction" ))
-                AND (( Nvl(transactionline.mainline, 'F') = ?
-                       AND Nvl(transactionline.taxline, 'F') = ?
+                AND (
+                      ( (
+                          (NVL(transactionLine.taxline, 'F') = ? AND transactionLine.mainline = ? AND "TRANSACTION"."TYPE" IN ('Journal')) 
+                          OR 
+                          (NVL(transactionLine.mainline, 'F') = ? AND NVL(transactionLine.taxline, 'F') = ?)
+                        )
                        AND transactionline."class" IN ( ? )
                        -- AND "account".accttype IN ( 'Expense' )
                        AND transactionline.subsidiary IN ( ? )
@@ -249,16 +253,21 @@ define([], () => {
                        AND NVL("TRANSACTION".custbody_md_po_exp_allo_entry, 'F') = ? 
                        AND "TRANSACTION".posting = ? 
                        AND TransactionAccountingLine."ACCOUNT" IN (${sourceAccounts.join(',')})
-                        )) `;
+                      )
+                    ) `;
 
       return this.getResults(sql, [
-        false,
-        false,
-        genClass,
-        subsidiary,
-        period,
-        false,
-        true
+        false,//transactionLine.taxline
+        true,//transactionLine.mainline
+        
+        false,//transactionLine.mainline
+        false,//transactionLine.taxline
+
+        genClass,//transactionline."class"
+        subsidiary,//transactionline.subsidiary
+        period,//"transaction".postingperiod
+        false,//"TRANSACTION".custbody_md_po_exp_allo_entry
+        true //"TRANSACTION".posting
       ]);
     }
 
@@ -278,9 +287,9 @@ define([], () => {
       BUILTIN_RESULT.TYPE_INTEGER(transactionLine.department) AS department /*{transactionlines.department#RAW}*/, 
       BUILTIN_RESULT.TYPE_INTEGER(transactionLine."LOCATION") AS "LOCATION" /*{transactionlines.location#RAW}*/, 
       BUILTIN_RESULT.TYPE_STRING("ACCOUNT".accttype) AS accttype /*{transactionlines.accountingimpact.account.accttype#RAW}*/, 
-      BUILTIN_RESULT.TYPE_CURRENCY(transactionLine.foreignamount, BUILTIN.CURRENCY(transactionLine.foreignamount)) AS foreignamount /*{transactionlines.foreignamount#RAW}*/, 
-      BUILTIN_RESULT.TYPE_CURRENCY(transactionLine.creditforeignamount, BUILTIN.CURRENCY(transactionLine.creditforeignamount)) AS creditforeignamount /*{transactionlines.creditforeignamount#RAW}*/, 
-      BUILTIN_RESULT.TYPE_CURRENCY(transactionLine.debitforeignamount, BUILTIN.CURRENCY(transactionLine.debitforeignamount)) AS debitforeignamount /*{transactionlines.debitforeignamount#RAW}*/
+      BUILTIN_RESULT.TYPE_CURRENCY(TransactionAccountingLine.amount, BUILTIN.CURRENCY(TransactionAccountingLine.amount)) AS amount /*{transactionlines.accountingimpact.amount#RAW}*/,
+      BUILTIN_RESULT.TYPE_CURRENCY(TransactionAccountingLine.credit, BUILTIN.CURRENCY(TransactionAccountingLine.credit)) AS credit /*{transactionlines.accountingimpact.credit#RAW}*/, 
+      BUILTIN_RESULT.TYPE_CURRENCY(TransactionAccountingLine.debit, BUILTIN.CURRENCY(TransactionAccountingLine.debit)) AS debit /*{transactionlines.accountingimpact.debit#RAW}*/
     FROM 
       "TRANSACTION", 
       "ACCOUNT", 
@@ -380,17 +389,17 @@ define([], () => {
 
         let cloneAmount = null;
 
-        let debitamount = clone.debitforeignamount;
-        let creditamount = clone.creditforeignamount;
+        let debitamount = clone.debit;
+        let creditamount = clone.credit;
 
         if (debitamount) {
           cloneAmount = debitamount;
-          clone.creditforeignamount = debitamount;
-          clone.debitforeignamount = "";
+          clone.credit = debitamount;
+          clone.debit = "";
         } else {
           cloneAmount = creditamount;
-          clone.debitforeignamount = creditamount;
-          clone.creditforeignamount ="";
+          clone.debit = creditamount;
+          clone.credit ="";
         }
 
         let totalSum = 0;
@@ -402,35 +411,35 @@ define([], () => {
           weightClone.allocatedEntry = "T";
           weightClone.class = weight.class;
 
-          let debitamount = weightClone.debitforeignamount;
-          let creditamount = weightClone.creditforeignamount;
+          let debitamount = weightClone.debit;
+          let creditamount = weightClone.credit;
 
           if (debitamount) {
-            weightClone.debitforeignamount = "";
-            weightClone.creditforeignamount = Number(
+            weightClone.debit = "";
+            weightClone.credit = Number(
               (debitamount * (weight.weight / 100)).toFixed(2)
             );
-            totalSum += weightClone.creditforeignamount;
+            totalSum += weightClone.credit;
             if (i === coll.length - 1) {
               let diff = totalSum - cloneAmount;
               // log.debug("diff", diff);
               if (diff) {
-                weightClone.creditforeignamount =
-                  weightClone.creditforeignamount - diff;
+                weightClone.credit =
+                  weightClone.credit - diff;
               }
             }
           } else {
-            weightClone.creditforeignamount = "";
-            weightClone.debitforeignamount = Number(
+            weightClone.credit = "";
+            weightClone.debit = Number(
               (creditamount * (weight.weight / 100)).toFixed(2)
             );
-            totalSum += weightClone.debitforeignamount;
+            totalSum += weightClone.debit;
             if (i === coll.length - 1) {
               let diff = totalSum - cloneAmount;
               // log.debug("diff", diff);
               if (diff) {
-                weightClone.debitforeignamount =
-                  weightClone.debitforeignamount - diff;
+                weightClone.debit =
+                  weightClone.debit - diff;
               }
             }
           }
