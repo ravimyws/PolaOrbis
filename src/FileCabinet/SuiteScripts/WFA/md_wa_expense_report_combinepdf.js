@@ -55,7 +55,7 @@ define(['N/file', 'N/query', 'N/record', 'N/render', 'N/runtime', 'N/search', 'N
                             if (attachment.fileType === file.Type.PDF) {
                                 return `<pdf src="data:application/pdf;base64,${contents}" />`;
                             } else {
-                                return `<pdf><body><img width="500pt" height="400pt" margin="5pt" src="data:image/png;base64,${contents}" /></body></pdf>`;
+                                return `<pdf><body><img width="500pt" height="500pt" src="data:image/png;base64,${contents}" /></body></pdf>`;
                             }
                         });
                         let combinedPdfContent = `<pdfset>${pdfs.join('')}</pdfset>`;
