@@ -331,6 +331,11 @@ define([], () => {
       return this.getResults(sql, [subsidiary]);
     }
 
+    getLastDateOfAccountingPeriod(id){
+      let sql = `select to_char(enddate,'MM/DD/YYYY') lastdate from accountingPeriod where id = ?`
+      return this.getResults(sql,[id])[0].lastdate;
+    }
+
     getResults(sql, params = []) {
       let rs = this.query.runSuiteQL({
         query: sql,

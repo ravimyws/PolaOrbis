@@ -124,6 +124,8 @@ define([
 
       log.debug('r values',values);
 
+      let request = values.request;
+
       let genExpenseData = values.genExpenseData;   
       
       let expenseData = values.expenseData; 
@@ -134,10 +136,14 @@ define([
 
       let uniqueTranIds = [...new Set(tranIds)];
 
+      let lastdate = gt.getLastDateOfAccountingPeriod(request.period);
+
       let body = {};
 
-      body["subsidiary"] = values.request.subsidiary;
+      body["subsidiary"] = request.subsidiary;
+      body["trandate"] = new Date(lastdate);
       //body["custbody_md_po_exp_allo_gen_fr_tran"] = values.jedata[0].id;
+      body['approved'] = false;
       body["custbody_md_po_exp_allo_entry"] = true;//"T";
 
       let relatedJE = gt.getRelatedJournalEntries(
